@@ -17,3 +17,11 @@ def get_current_user_id():
 @routes.route('/')
 def index():
     return render_template('index.html')
+
+@routes.route('/signup', methods=['GET', 'POST'])
+def signup():
+    return render_template('signup.html')
+
+@routes.route('/signin', methods=['GET', 'POST'])
+def signin():
+    return render_template('signin.html')
