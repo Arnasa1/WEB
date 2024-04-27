@@ -1,11 +1,13 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request, make_response
-from forms import SignUpForm
+from forms import SignUpForm, SignInForm
 from models.models import User
 from Web import db
+from functools import wraps
 
 routes = Blueprint('routes', __name__)
 
 def login_required(view):
+    @wraps(view)
     def wrapped_view(**kwargs):
         user_id = request.cookies.get('user_id')
         if user_id is None:
@@ -31,10 +33,9 @@ def signup():
 
 @routes.route('/signin', methods=['GET', 'POST'])
 def signin():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        user = User.query.filter_by(username=username, password=password).first()
+    form = SignInForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data, password=form.password.data).first()
         if user:
             flash('You have been logged in successfully!', 'success')
             response = make_response(redirect(url_for('routes.main')))
@@ -42,7 +43,7 @@ def signin():
             return response
         else:
             flash('Login unsuccessful. Please check your username and password.', 'danger')
-    return render_template('signin.html')
+    return render_template('signin.html', form=form)
 
 @routes.route('/logout')
 def logout():

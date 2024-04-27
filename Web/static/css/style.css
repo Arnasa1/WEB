@@ -110,3 +110,50 @@ footer p {
     color: #006400; 
     font-size: 1rem;
 }
+
+.main {
+    background-color: #F0FFF0; 
+    padding: 100px 0;
+    text-align: center;
+}
+
+.main h2 {
+    font-size: 3rem;
+    color: #006400; 
+    margin-bottom: 20px;
+}
+
+.task-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    justify-content: center;
+}
+
+.task {
+    background-color: #FFFFFF; 
+    border: 1px solid #006400; 
+    border-radius: 5px;
+    padding: 20px;
+}
+
+.task h3 {
+    font-size: 1.5rem;
+    color: #006400; 
+}
+
+.task p {
+    font-size: 1rem;
+    color: #556B2F;
+}
+
+footer {
+    background-color: #90EE90; 
+    padding: 20px 0;
+    text-align: center;
+}
+
+footer p {
+    color: #006400; 
+    font-size: 1rem;
+}

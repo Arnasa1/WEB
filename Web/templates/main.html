@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taskify - Manage Your Tasks</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="container">
+                <div class="logo">
+                    <img src="{{ url_for('static', filename='images/Logo.png') }}" alt="Taskify Logo">
+                </div>
+                <div class="buttons">
+                    <button onclick="location.href='/logout'">Log Out</button>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <section class="main">
+        <div class="container">
+            <h2>Your Tasks</h2>
+            <div class="task-list">
+                {% for task in tasks %}
+                <div class="task">
+                    <h3>{{ task.task_name }}</h3>
+                    <p>{{ task.task_desc }}</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Taskify. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>
