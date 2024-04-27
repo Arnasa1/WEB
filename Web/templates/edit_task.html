@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Task - Taskify</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="container">
+                <div class="logo">
+                    <img src="{{ url_for('static', filename='images/Logo.png') }}" alt="Taskify Logo">
+                </div>
+                <div class="buttons">
+                    <button onclick="location.href='/logout'">Log Out</button>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <section class="main">
+        <div class="container">
+            <h2>Edit Task</h2>
+            <div class="task-container">
+                <div class="task">
+                    <form action="{{ url_for('routes.edit_task', task_id=task.id) }}" method="POST">
+                        {{ form.csrf_token }}
+                        <div class="form-group">
+                            <label for="task_name">Task Name</label>
+                            <input type="text" id="task_name" name="task_name" class="form-control" required value="{{ task.task_name }}">
+                        </div>
+                        <div class="form-group">
+                            <label for="task_desc">Task Description</label>
+                            <textarea id="task_desc" name="task_desc" class="form-control" required>{{ task.task_desc }}</textarea>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit">Update Task</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Taskify. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

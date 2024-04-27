@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Taskify - Manage Your Tasks</title>
+    <title>Main - Taskify</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
     <header>
@@ -22,14 +23,50 @@
     </header>
     <section class="main">
         <div class="container">
-            <h2>Your Tasks</h2>
-            <div class="task-list">
-                {% for task in tasks %}
+            <h2>Tasks</h2>
+            <div class="task-container">
+                {% for request in requests %}
                 <div class="task">
-                    <h3>{{ task.task_name }}</h3>
-                    <p>{{ task.task_desc }}</p>
+                    <h3>{{ request.task_name }}</h3>
+                    <p>{{ request.task_desc }}</p>
+                    <p>Created: {{ request.start_date.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+                    {% if request.end_date %}
+                    <p>Completed: {{ request.end_date.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+                    {% else %}
+                    <form action="{{ url_for('routes.complete_task', task_id=request.id) }}" method="POST">
+                        {{ form.csrf_token }}
+                        <button type="submit">Complete</button>
+                    </form>
+                    {% endif %}
+                    <button onclick="location.href='{{ url_for('routes.edit_task', task_id=request.id) }}'">Edit</button>
+                    <form action="{{ url_for('routes.delete_task', task_id=request.id) }}" method="POST">
+                        {{ form.csrf_token }}
+                        <button type="submit">Delete</button>
+                    </form>
                 </div>
                 {% endfor %}
+            </div>
+            <div class="add-task">
+                <button onclick="document.getElementById('taskForm').style.display='block'">Add Task <i class="fas fa-plus"></i></button>
+                <div id="taskForm" class="modal" style="display:none;">
+                    <div class="modal-content">
+                        <span onclick="document.getElementById('taskForm').style.display='none'" class="close">&times;</span>
+                        <form action="{{ url_for('routes.main') }}" method="POST">
+                            {{ form.csrf_token }}
+                            <div class="form-group">
+                                <label for="task_name">Task Name</label>
+                                <input type="text" id="task_name" name="task_name" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="task_desc">Task Description</label>
+                                <textarea id="task_desc" name="task_desc" class="form-control" required></textarea>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit">Add Task</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -38,5 +75,17 @@
             <p>&copy; 2024 Taskify. All rights reserved.</p>
         </div>
     </footer>
+    <script>
+        var modal = document.getElementById('taskForm');
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+        
+        function autoRefresh() {
+            setTimeout(() => { window.location.reload(); }, 1);
+        }
+    </script>
 </body>
 </html>

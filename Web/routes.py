@@ -1,13 +1,12 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request, make_response
-from forms import SignUpForm, SignInForm
-from models.models import User
+from forms import SignUpForm, SignInForm, TaskForm
+from models.models import User, UserRequest
 from Web import db
-from functools import wraps
+from datetime import datetime
 
 routes = Blueprint('routes', __name__)
 
 def login_required(view):
-    @wraps(view)
     def wrapped_view(**kwargs):
         user_id = request.cookies.get('user_id')
         if user_id is None:
@@ -15,6 +14,18 @@ def login_required(view):
             return redirect(url_for('routes.signin'))
         return view(**kwargs)
     return wrapped_view
+
+@routes.route('/main', methods=['GET', 'POST'])
+def main():
+    user_id = request.cookies.get('user_id')
+    requests = UserRequest.query.filter_by(user_id=user_id).all()
+    form = TaskForm()
+    if form.validate_on_submit():
+        task = UserRequest(task_name=form.task_name.data, task_desc=form.task_desc.data, user_id=request.cookies.get('user_id'))
+        db.session.add(task)
+        db.session.commit()
+        flash('Task added successfully!', 'success')
+    return render_template('main.html', requests=requests, form=form)
 
 @routes.route('/')
 def index():
@@ -52,7 +63,43 @@ def logout():
     flash('You have been logged out successfully!', 'success')
     return response
 
-@routes.route('/main')
+@routes.route('/add_task', methods=['POST', 'GET'])
 @login_required
-def main():
-    return render_template('main.html')
+def add_task():
+    form = TaskForm()
+    if form.validate_on_submit():
+        task = UserRequest(task_name=form.task_name.data, task_desc=form.task_desc.data, user_id=request.cookies.get('user_id'))
+        db.session.add(task)
+        db.session.commit()
+        flash('Task added successfully!', 'success')
+        return redirect(url_for('routes.main'))
+    return redirect(url_for('routes.main'))
+
+@routes.route('/complete_task/<int:task_id>', methods=['POST'])
+def complete_task(task_id):
+    task = UserRequest.query.get(task_id)
+    if task:
+        task.end_date = datetime.now()
+        db.session.commit()
+        flash('Task completed successfully!', 'success')
+    return redirect(url_for('routes.main'))
+
+@routes.route('/edit_task/<int:task_id>', methods=['GET', 'POST'])
+def edit_task(task_id):
+    task = UserRequest.query.get_or_404(task_id)
+    form = TaskForm()
+    if form.validate_on_submit():
+        task.task_name = form.task_name.data
+        task.task_desc = form.task_desc.data
+        db.session.commit()
+        flash('Task updated successfully!', 'success')
+        return redirect(url_for('routes.main'))
+    return render_template('edit_task.html', form=form, task=task)
+
+@routes.route('/delete_task/<int:task_id>', methods=['POST'])
+def delete_task(task_id):
+    task = UserRequest.query.get_or_404(task_id)
+    db.session.delete(task)
+    db.session.commit()
+    flash('Task deleted successfully!', 'success')
+    return redirect(url_for('routes.main'))
