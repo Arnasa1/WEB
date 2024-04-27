@@ -9,7 +9,8 @@ class User(db.Model):
 class UserRequest(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    date = db.Column(db.Date, default=date.today)
+    start_date = db.Column(db.Date, default=date.today)
+    end_date =db.Column(db.Date)
     task_name = db.Column(db.String(5000))
     task_desc = db.Column(db.String(5000))
 
@@ -17,7 +18,8 @@ class UserRequest(db.Model):
         return {
             'id': self.id,
             'user_id': self.user_id,
-            'date': self.date.isoformat(),
+            'start_date': self.date.isoformat(),
+            'end_date': self.date.isoformat(),
             'task_name': self.task_name,
             'task_desc': self.task_desc
         }
