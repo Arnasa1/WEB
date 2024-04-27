@@ -23,15 +23,9 @@ body {
 }
 
 .logo img {
-    width: 100px;
+    width: 50px;
     height: auto;
     margin-right: 10px;
-}
-
-.logo h1 {
-    font-size: 1.5rem;
-    color: #006400; 
-    margin: 0;
 }
 
 .buttons button {
@@ -49,24 +43,63 @@ body {
     background-color: #7CCD7C; 
 }
 
-/* Hero Section */
-.hero {
+
+.signup-form {
     background-color: #F0FFF0; 
+    padding: 100px 0;
     text-align: center;
 }
 
-.hero h1 {
+.signup-form h2 {
     font-size: 3rem;
     color: #006400; 
     margin-bottom: 20px;
 }
 
-.hero p {
-    font-size: 1.2rem;
-    color: #556B2F;
+.form-group {
+    margin-bottom: 10px;
 }
 
-/* Footer */
+.form-group label {
+    font-size: 1.2rem;
+    color: #006400; 
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #006400; 
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #7CCD7C; 
+}
+
+.form-group .error {
+    color: #FF0000; 
+    margin-top: 5px;
+}
+
+.form-group button {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #006400; 
+    color: #fff;
+}
+
+.form-group button:hover {
+    background-color: #7CCD7C; 
+}
+
+
 footer {
     background-color: #90EE90; 
     padding: 20px 0;
