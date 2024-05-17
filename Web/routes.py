@@ -1,12 +1,15 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request, make_response
 from forms import SignUpForm, SignInForm, TaskForm
 from models.models import User, UserRequest
-from Web import db
+from Web import db, cache
 from datetime import datetime
+from functools import wraps
+from flask_caching import Cache
 
 routes = Blueprint('routes', __name__)
 
 def login_required(view):
+    @wraps(view)
     def wrapped_view(**kwargs):
         user_id = request.cookies.get('user_id')
         if user_id is None:
@@ -16,6 +19,8 @@ def login_required(view):
     return wrapped_view
 
 @routes.route('/main', methods=['GET', 'POST'])
+@login_required
+@cache.cached(timeout=60)
 def main():
     user_id = request.cookies.get('user_id')
     requests = UserRequest.query.filter_by(user_id=user_id).all()
@@ -25,6 +30,7 @@ def main():
         db.session.add(task)
         db.session.commit()
         flash('Task added successfully!', 'success')
+        cache.clear()
     return render_template('main.html', requests=requests, form=form)
 
 @routes.route('/')
@@ -61,6 +67,7 @@ def logout():
     response = make_response(redirect(url_for('routes.index')))
     response.set_cookie('user_id', '', expires=0)
     flash('You have been logged out successfully!', 'success')
+    cache.clear()
     return response
 
 @routes.route('/add_task', methods=['POST', 'GET'])
